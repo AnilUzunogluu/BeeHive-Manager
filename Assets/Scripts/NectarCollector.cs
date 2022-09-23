@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class NectarCollector : BeeBase
 {
     public NectarCollector() : base("NectarCollector")
@@ -10,5 +12,7 @@ public class NectarCollector : BeeBase
     protected override void DoJob()
     {
         HoneyVault.CollectNectar(NECTAR_COLLECTED_PER_SHIFT);
+        Debug.Log("NC DID ITS JOB");
+
     }
 }

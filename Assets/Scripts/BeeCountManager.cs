@@ -1,86 +1,92 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BeeCountManager : MonoBehaviour
 {
-    [SerializeField] private Button[] addButtons;
-    [SerializeField] private Button[] removeButtons;
+    [SerializeField] private List<Button> addButtons;
+    [SerializeField] private List<Button> removeButtons;
     
     
     public static float HoneyManufacturerBeeCount = 1f;
     public static float EggCareBeeCount = 1f;
     public static float NectarCollectorBeeCount = 1f;
 
+    private Queen _queen;
+
+    public event Action OnWorkerChange;
+
 
     private void Start()
     {
-        DelegateAddButtons();
+        DelegateButtons();
+        _queen = FindObjectOfType<Queen>();
 
     }
 
-    // public void AddHMBee()
-    // {
-    //     HoneyManufacturerBeeCount++;
-    //     Debug.Log("hmBees " + HoneyManufacturerBeeCount);
-    // }
-    // public void AddECBee()
-    // {
-    //     EggCareBeeCount++;
-    //     Debug.Log("ecBees " + EggCareBeeCount);
-    //
-    // }
-    // public void AddNCBee()
-    // {
-    //     NectarCollectorBeeCount++;
-    //     Debug.Log("ncBees " + NectarCollectorBeeCount);
-    //
-    // }
+    private void AddBee(int buttonIndex)
+    {
+        if (_queen.UnassignedWorkers >= 1)
+        {
+            switch (buttonIndex)
+            {
+                case 0:
+                    HoneyManufacturerBeeCount++;
+                    break;
+                case 1:
+                    EggCareBeeCount++;
+                    break;
+                case 2:
+                    NectarCollectorBeeCount++;
+                    break;
+            }
+            _queen.RemoveUnassignedWorker();
+            OnWorkerChange?.Invoke();
+        }
+        
+    }
 
-    public void AddBee(int buttonIndex)
+    private void RemoveBee(int buttonIndex)
     {
         switch (buttonIndex)
         {
             case 0:
-                HoneyManufacturerBeeCount++;
-                Debug.Log("hmBees " + HoneyManufacturerBeeCount);
+                HoneyManufacturerBeeCount = HandleRemoveBee(HoneyManufacturerBeeCount);
                 break;
             case 1:
-                EggCareBeeCount++;
-                Debug.Log("ecBees " + EggCareBeeCount);
+                EggCareBeeCount = HandleRemoveBee(EggCareBeeCount);
                 break;
             case 2:
-                NectarCollectorBeeCount++;
-                Debug.Log("ncBees " + NectarCollectorBeeCount);
+                NectarCollectorBeeCount = HandleRemoveBee(NectarCollectorBeeCount);
                 break;
         }
+        OnWorkerChange?.Invoke();
     }
 
-    public void RemoveHMBee()
+    private void DelegateButtons()
     {
-        HoneyManufacturerBeeCount--;
-        Debug.Log("hmBees " + HoneyManufacturerBeeCount);
-
-    }
-    public void RemoveECBee()
-    {
-        EggCareBeeCount--;
-        Debug.Log("ecBees " + EggCareBeeCount);
-
-    }
-    public void RemoveNCBee()
-    {
-        NectarCollectorBeeCount--;
-        Debug.Log("ncBees " + NectarCollectorBeeCount);
-
-    }
-
-    private void DelegateAddButtons()
-    {
-        for (int i = 0; i < addButtons.Length; i++)
+        for (int i = 0; i < addButtons.Count; i++)
         {
             var i1 = i;
             addButtons[i].onClick.AddListener(delegate { AddBee(i1); });
         }
+
+        for (int i = 0; i < removeButtons.Count; i++)
+        {
+            var i1 = i;
+            removeButtons[i].onClick.AddListener(delegate { RemoveBee(i1); });
+        }
+    }
+
+    private float HandleRemoveBee(float beeCount)
+    {
+        if (beeCount > 0)
+        {
+            beeCount--;
+            _queen.AddUnassignedWorker();
+        }
+
+        return beeCount;
     }
 }

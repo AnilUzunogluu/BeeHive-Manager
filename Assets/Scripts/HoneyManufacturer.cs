@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class HoneyManufacturer : BeeBase
 {
     public HoneyManufacturer() : base("HoneyManufacturer")
@@ -11,5 +13,6 @@ public class HoneyManufacturer : BeeBase
     protected override void DoJob()
     {
         HoneyVault.ConvertNectarToHoney(NECTAR_PROCESSED_PER_SHIFT);
+        Debug.Log("HM DID ITS JOB");
     }
 }

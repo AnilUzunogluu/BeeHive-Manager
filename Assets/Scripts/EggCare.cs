@@ -1,9 +1,15 @@
+using UnityEngine;
+
 public class EggCare : BeeBase
 {
     private Queen queen;
-    public EggCare(Queen queen) : base("EggCare")
+    public EggCare() : base("EggCare")
     {
-        this.queen = queen;
+    }
+
+    private void Start()
+    {
+        queen = FindObjectOfType<Queen>();
     }
 
     protected override float CostPerShift => 1.35f;
@@ -13,5 +19,7 @@ public class EggCare : BeeBase
     protected override void DoJob()
     {
         queen.CareForEggs(CARE_PROGRESS_PER_SHIFT);
+        Debug.Log("EC DID ITS JOB");
+
     }
 }

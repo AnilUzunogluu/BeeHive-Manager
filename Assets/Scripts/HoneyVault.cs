@@ -1,11 +1,11 @@
-using UnityEngine;
+using System;
 
 public static class HoneyVault
 {
-    private static float honey = 25f;
-    private static float nectar = 100f;
+    public static float Honey { get; private set; } = 25f;
+    public static float Nectar { get; private set; } = 100f;
 
-    
+
     private const float NECTAR_CONVERSION_RATIO = 0.19f;
     private const float LOW_LEVEL_WARNING = 10F;
 
@@ -13,28 +13,38 @@ public static class HoneyVault
     {
         if (amount > 0)
         {
-            nectar += amount;
+            Nectar += amount;
         }
     }
     public static void ConvertNectarToHoney(float amount)
     {
-        if (amount > nectar)
+        if (amount > Nectar)
         {
-            amount = nectar;
+            amount = Nectar;
         }
-        nectar -= amount;
+        Nectar -= amount;
         var nectarConvertedToHoney = amount * NECTAR_CONVERSION_RATIO;
-        honey += nectarConvertedToHoney;
+        Honey += nectarConvertedToHoney;
     }
 
     public static bool ConsumeHoney(float amount)
     {
-        if (honey >= amount)
+        if (Honey >= amount)
         {
-            honey -= amount;
+            Honey -= amount;
             return true;
         }
 
         return false;
+    }
+
+    public static bool CheckHoneyWarning()
+    {
+        return Honey <= LOW_LEVEL_WARNING;
+    }
+    
+    public static bool CheckNectarWarning()
+    {
+        return Nectar <= LOW_LEVEL_WARNING;
     }
 }
