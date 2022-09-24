@@ -3,10 +3,12 @@ using UnityEngine;
 public class BeeBase : MonoBehaviour
 {
     protected virtual float CostPerShift { get; }
-    public string Job { get; private set; }
-    public BeeBase(string job)
+
+    private GameManager _manager;
+
+    private void Awake()
     {
-        Job = job;
+        _manager = FindObjectOfType<GameManager>();
     }
 
     public void WorkNextShift()
@@ -14,6 +16,10 @@ public class BeeBase : MonoBehaviour
         if (HoneyVault.ConsumeHoney(CostPerShift))
         {
             DoJob();
+        }
+        else
+        {
+            _manager.SetEndGame(false);
         }
     }
 

@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class DisplayHandler : MonoBehaviour
@@ -12,6 +11,9 @@ public class DisplayHandler : MonoBehaviour
     [Header("Status Display")]
     [SerializeField] private TextMeshProUGUI honeyAndNectarText;
     [SerializeField] private TextMeshProUGUI eggsAndWorkersText;
+
+    [Header("EndGame Display")] 
+    [SerializeField] private TextMeshProUGUI endGameDisplay;
 
     private Queen _queen;
     private BeeCountManager _countManager;
@@ -60,4 +62,11 @@ public class DisplayHandler : MonoBehaviour
         UpdateHoneyAndNectar();
         UpdateEggsAndWorkers();
     }
+
+    public void SetEndGameDisplay(bool isWon)
+    {
+        endGameDisplay.text = isWon ? "Congratulations! You have managed to save the hive!" : $"You ran out of resources to keep the hive alive! Total number of bees was: {BeeCountManager._totalNumOfBees}";
+    }
+    
+    
 }

@@ -6,12 +6,9 @@ public class Queen : BeeBase
 {
 
     [SerializeField] private Button nextShiftButton;
-    public Queen() : base("Queen")
-    {
-    }
     protected override float CostPerShift => 2.15f;
 
-    private const float EGGS_PER_SHIFT = 0.45f;
+    private const float EGGS_PER_SHIFT = 0.25f;
     private const float HONEY_PER_UNASSIGNED_WORKER = 0.5f;
 
     public float Eggs { get; private set; }
@@ -37,15 +34,16 @@ public class Queen : BeeBase
         BeeCountManager.EggCareBeeCount,
         BeeCountManager.NectarCollectorBeeCount
     };
-        Eggs += EGGS_PER_SHIFT;
-        var honeyToFeedToUnassignedWorkers = UnassignedWorkers * HONEY_PER_UNASSIGNED_WORKER;
-        HoneyVault.ConsumeHoney(honeyToFeedToUnassignedWorkers);
+     if (BeeCountManager._totalNumOfBees > 0)
+     {
+         Eggs += EGGS_PER_SHIFT;
+         var honeyToFeedToUnassignedWorkers = UnassignedWorkers * HONEY_PER_UNASSIGNED_WORKER;
+         HoneyVault.ConsumeHoney(honeyToFeedToUnassignedWorkers);
 
-        WorkTheBees(workers, beeAmounts);
+         WorkTheBees(workers, beeAmounts);
         
-        OnNewShift?.Invoke();
-        Debug.Log("QUEEN DID ITS JOB");
-
+         OnNewShift?.Invoke();
+     }
     }
 
     public void CareForEggs(float eggsToConvert)

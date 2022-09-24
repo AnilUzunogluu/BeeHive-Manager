@@ -9,19 +9,31 @@ public class BeeCountManager : MonoBehaviour
     [SerializeField] private List<Button> removeButtons;
     
     
-    public static float HoneyManufacturerBeeCount = 1f;
-    public static float EggCareBeeCount = 1f;
-    public static float NectarCollectorBeeCount = 1f;
+    public static float HoneyManufacturerBeeCount;
+    public static float EggCareBeeCount;
+    public static float NectarCollectorBeeCount;
+
+    public static float _totalNumOfBees;
 
     private Queen _queen;
+    private GameManager _manager;
 
     public event Action OnWorkerChange;
 
 
+    private void Awake()
+    {
+        HoneyManufacturerBeeCount = 1f;
+        EggCareBeeCount = 1;
+        NectarCollectorBeeCount = 1f;
+    }
+
     private void Start()
     {
         DelegateButtons();
+        CalcTotalNumOfBees();
         _queen = FindObjectOfType<Queen>();
+        _manager = FindObjectOfType<GameManager>();
 
     }
 
@@ -43,6 +55,7 @@ public class BeeCountManager : MonoBehaviour
             }
             _queen.RemoveUnassignedWorker();
             OnWorkerChange?.Invoke();
+            CalcTotalNumOfBees();
         }
         
     }
@@ -61,6 +74,7 @@ public class BeeCountManager : MonoBehaviour
                 NectarCollectorBeeCount = HandleRemoveBee(NectarCollectorBeeCount);
                 break;
         }
+        CalcTotalNumOfBees();
         OnWorkerChange?.Invoke();
     }
 
@@ -88,5 +102,15 @@ public class BeeCountManager : MonoBehaviour
         }
 
         return beeCount;
+    }
+
+    private void CalcTotalNumOfBees()
+    {
+        _totalNumOfBees = HoneyManufacturerBeeCount + EggCareBeeCount + NectarCollectorBeeCount;
+
+        if (_totalNumOfBees >= GameManager.WIN_CONDITION)
+        {
+            _manager.SetEndGame(true);
+        }
     }
 }

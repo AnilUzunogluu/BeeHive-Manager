@@ -1,5 +1,3 @@
-using System;
-
 public static class HoneyVault
 {
     public static float Honey { get; private set; } = 25f;
